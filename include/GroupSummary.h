@@ -1,3 +1,4 @@
+#pragma once
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -8,14 +9,6 @@
 #include <iostream>
 #include "ext2_fs.h"
 #include "SuperblockSummary.h"
-#include "GroupSummary.h"
 
-using namespace std;
-
-int main()
-{
-	int fd = open("trivial.img", O_RDONLY);
-	getSuperNodeInfo(fd);
-	getGroupInfo(fd);
-	return 0;
-}
+unsigned int getBlockSize(int fd);
+void getGroupInfo(int fd);

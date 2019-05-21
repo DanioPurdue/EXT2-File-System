@@ -1,3 +1,4 @@
+#pragma once
 /*
  *  linux/include/linux/ext2_fs.h
  *
