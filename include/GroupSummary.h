@@ -12,7 +12,8 @@
 #include "SuperblockSummary.h"
 
 unsigned int getBlockSize(int fd);
-// std::pair<std::vector<unsigned int>, std::vector<unsigned int>> getGroupInfo(int fd);
-// void getGroupInfo(int fd);
-std::vector<std::vector<unsigned int>> getGroupInfo(int fd);
+struct ext2_group_desc* getGroupInfo(int fd);
+unsigned int getBlockSize(int fd);
 unsigned int getBlockNumber(int fd);
+unsigned int getInodeNumber(int fd);
+// std::vector<std::vector<unsigned int>> getGroupInfo(int fd);
