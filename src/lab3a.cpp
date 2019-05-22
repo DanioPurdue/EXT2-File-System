@@ -9,6 +9,7 @@
 #include "ext2_fs.h"
 #include "SuperblockSummary.h"
 #include "GroupSummary.h"
+#include "FreeBlockEntries.h"
 
 using namespace std;
 
@@ -16,7 +17,8 @@ int main()
 {
 	int fd = open("trivial.img", O_RDONLY);
 	getSuperNodeInfo(fd);
-	getGroupInfo(fd);
+	// getGroupInfo(fd);
+	freeBlockEntries(fd);
 	printf("Main\n");
 	return 0;
 }
