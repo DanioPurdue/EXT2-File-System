@@ -7,8 +7,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include <vector>
 #include "ext2_fs.h"
 #include "SuperblockSummary.h"
 
 unsigned int getBlockSize(int fd);
+// std::pair<std::vector<unsigned int>, std::vector<unsigned int>> getGroupInfo(int fd);
 void getGroupInfo(int fd);
