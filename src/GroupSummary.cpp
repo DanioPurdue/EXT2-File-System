@@ -28,7 +28,7 @@ unsigned int getInodeNumber(int fd) {
 struct ext2_group_desc* getGroupInfo(int fd) {
 	unsigned int block_size = getBlockSize(fd);
 	struct ext2_group_desc* group_descriptor_table = new struct ext2_group_desc;
-	pread(fd, group_descriptor_table, sizeof(struct ext2_group_desc), block_size + 1024);
+	pread(fd, group_descriptor_table, sizeof(struct ext2_group_desc), block_size + SUPERBLOCK_OFFSET);
 	int group_num = 0;
 	unsigned int total_blocks = getBlockNumber(fd);
 	unsigned int total_inodes = getInodeNumber(fd);
