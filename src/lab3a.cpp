@@ -17,5 +17,6 @@ int main()
 	int fd = open("trivial.img", O_RDONLY);
 	getSuperNodeInfo(fd);
 	getGroupInfo(fd);
+	printf("Main\n");
 	return 0;
 }

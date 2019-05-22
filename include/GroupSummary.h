@@ -13,4 +13,5 @@
 
 unsigned int getBlockSize(int fd);
 // std::pair<std::vector<unsigned int>, std::vector<unsigned int>> getGroupInfo(int fd);
-void getGroupInfo(int fd);
+// void getGroupInfo(int fd);
+std::vector<std::vector<unsigned int>> getGroupInfo(int fd);

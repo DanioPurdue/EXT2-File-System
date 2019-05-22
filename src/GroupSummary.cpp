@@ -42,20 +42,22 @@ int countBlockOnes (unsigned char* bitmap, int size) {
 	return count;
 }
 
-void getGroupInfo(int fd) {
+std::vector<std::vector<unsigned int>> getGroupInfo(int fd) {
 	unsigned int block_size = getBlockSize(fd);
 	struct ext2_group_desc group_descriptor_table[block_size/sizeof(struct ext2_group_desc)];
 	// struct ext2_group_desc* group_descriptor = malloc(sizeof(struct ext2_group_desc));
 	pread(fd, group_descriptor_table, block_size, block_size + 1024);
 	int group_num = 0;
 
+	std::vector<std::vector<unsigned int>> result = std::vector<std::vector<unsigned int>>();
 	unsigned int total_blocks = getBlockNumber(fd);
 	unsigned int total_inodes = getInodeNumber(fd);
 	unsigned char block_bitmap_content[total_blocks];
 	unsigned char inode_bitmap_content[total_inodes];
 
-	// std::vector<unsigned int> block/_bitmap_locations = std::vector<unsigned int>();
-	// std::vector<unsigned int> inode_bitmap_locations = std::vector<unsigned int>();
+	/* Return the pair of these two vectors, which stores the block numbers of bitmaps*/
+	std::vector<unsigned int> block_bitmap_locations = std::vector<unsigned int>();
+	std::vector<unsigned int> inode_bitmap_locations = std::vector<unsigned int>();
 	while (1) {
 		if (group_descriptor_table[group_num].bg_block_bitmap == 0)
 			break;
@@ -65,8 +67,11 @@ void getGroupInfo(int fd) {
 		unsigned int block_bitmap = group_descriptor_table[group_num].bg_block_bitmap;
 		unsigned int inode_bitmap = group_descriptor_table[group_num].bg_inode_bitmap;
 
-		// block_bitmap_locations.push_back(block_bitmap);
-		// inode_bitmap_locations.push_back(inode_bitmap);
+		/* Append the locations of block bitmap and inode bitmap to the vectors*/
+		block_bitmap_locations.push_back(block_bitmap);
+		inode_bitmap_locations.push_back(inode_bitmap);
+
+
 		// compute number of blocks, inodes in group
 		pread(fd, block_bitmap_content, total_blocks / 8, block_size * block_bitmap);
 		pread(fd, inode_bitmap_content, total_inodes / 8, block_size * inode_bitmap);
@@ -80,7 +85,10 @@ void getGroupInfo(int fd) {
 		printf("GROUP,%u,%u,%u,%u,%u,%u,%u,%u\n", group_num, total_blocks, total_inodes, free_blocks, free_inodes, block_bitmap, inode_bitmap, free_inode);
 		group_num++;
 	}
-	// printf("Loop Finished\n");
+	printf("Loop Finished\n");
 
+	result.push_back(block_bitmap_locations);
+	result.push_back(inode_bitmap_locations);
+	return result;
 	// return std::make_pair(block_bitmap_locations, inode_bitmap_locations);
 }
