@@ -10,6 +10,7 @@
 #include "SuperblockSummary.h"
 #include "GroupSummary.h"
 #include "FreeBlockEntries.h"
+#include "FreeInodeEntries.h"
 
 using namespace std;
 
@@ -19,5 +20,6 @@ int main()
 	getSuperNodeInfo(fd);
 	getGroupInfo(fd);
 	freeBlockEntries(fd);
+	freeInodeEntries(fd);
 	return 0;
 }

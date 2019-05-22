@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11 -I./include
 SOURCES = src/*.cpp
-OBJFILES = lab3a.o SuperblockSummary.o GroupSummary.o FreeBlockEntries.o
+OBJFILES = lab3a.o SuperblockSummary.o GroupSummary.o FreeBlockEntries.o FreeInodeEntries.o
 TARGET = lab3a
 
 all:$(TARGET)
@@ -20,6 +20,9 @@ GroupSummary.o: src/GroupSummary.cpp
 
 FreeBlockEntries.o: src/FreeBlockEntries.cpp
 	$(CC) $(CFLAGS) -c src/FreeBlockEntries.cpp
+
+FreeInodeEntries.o: src/FreeInodeEntries.cpp
+	$(CC) $(CFLAGS) -c src/FreeInodeEntries.cpp
 
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~
