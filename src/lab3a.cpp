@@ -11,6 +11,7 @@
 #include "GroupSummary.h"
 #include "FreeBlockEntries.h"
 #include "FreeInodeEntries.h"
+#include "InodeSummary.h"
 
 using namespace std;
 
@@ -21,5 +22,6 @@ int main()
 	getGroupInfo(fd);
 	freeBlockEntries(fd);
 	freeInodeEntries(fd);
+	getInodeSummary(fd);
 	return 0;
 }

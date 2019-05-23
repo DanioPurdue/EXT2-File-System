@@ -13,7 +13,7 @@ unsigned int getInodeBitmapID(int fd) {
 
 void freeInodeEntries(int fd) {
     unsigned int inode_bitmap_id = getInodeBitmapID(fd);
-    cout << "inode_bitmap_id: " << inode_bitmap_id << endl;
+    // cout << "inode_bitmap_id: " << inode_bitmap_id << endl;
     unsigned int block_size = getBlockSize(fd);
     unsigned int inode_num = getInodeNumber(fd);
     unsigned int bytes_required = (inode_num % 8 == 0) ? (inode_num / 8) : (inode_num / 8 + 1);
