@@ -67,13 +67,14 @@ void printFreeInode(struct ext2_inode * inode, unsigned int inode_id) {
 
 void getInodeSummary(int fd) {
     unsigned int inode_table_id = getInodeTableID(fd);
-    cout << "inode table id: " << inode_table_id << endl;
+    // cout << "inode table id: " << inode_table_id << endl;
     unsigned int inode_num = getInodeNumber(fd);
     unsigned int block_size = getBlockSize(fd);
-    cout << "Inode number: " << inode_num << endl;
+    // cout << "Inode number: " << inode_num << endl;
     struct ext2_inode * inodes = new struct ext2_inode[inode_num];
     pread(fd, inodes, inode_num * sizeof(struct ext2_inode), SUPERBLOCK_OFFSET + block_size * (inode_table_id - 1));
     for (unsigned int i = 0; i < inode_num; i++) {
         printFreeInode(inodes+i, i+1);
     }
+    delete inodes;
 }

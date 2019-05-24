@@ -14,7 +14,7 @@ void bitAccess(__u8 val, unsigned int offset, unsigned int block_num, string tag
     for (int i = 0; i < 8; i++) {
         if (offset * 8 + i == block_num) return;
         if ((mask & val) == 0) {
-            printf("%s, %u\n", tag_name.c_str(), i + offset * 8 + 1);
+            printf("%s,%u\n", tag_name.c_str(), i + offset * 8 + 1);
         }
         mask = mask << 1;
     }
