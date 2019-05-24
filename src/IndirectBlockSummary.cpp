@@ -43,8 +43,8 @@ void IndirectBlockSummary(int fd) {
         if (inode == nullptr) 
         	continue;
 
-    	if (inode->i_mode == 0 || inode->i_links_count == 0)
-    		continue;
+    	// if (inode->i_mode == 0 || inode->i_links_count == 0)
+    	// 	continue;
 
     	// cout << "i: " << i << endl;
     	// cout << "Single: " << inode -> i_block[EXT2_IND_BLOCK] << endl;
