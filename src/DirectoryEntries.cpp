@@ -1,19 +1,21 @@
-#include "DirectoryEntries.cpp"
+#include "DirectoryEntries.h"
+
+using namespace std;
 
 bool isValidDirectNode(struct ext2_inode * inode) {
-    if (inode == nullptr) return;
+    if (inode == nullptr) return false;
     //check whether is is empty
     if (inode->i_mode == 0 || inode->i_links_count == 0) return false;
     if (inode->i_size == 0) return false;
-    unsigned int mode_mask = 0xF000;
+    // unsigned int mode_mask = 0xF000;
     //check inode type
-    if ((inode->i_mode & mode_mask) == EXT2_S_IFDIR) return false;
-    return true;
+    if ((inode->i_mode & EXT2_S_IFDIR) == EXT2_S_IFDIR) return true;
+    return false;
 }
 
-void printOneEntry(struct ext2_dir_entry * one_entry, unsigned int offset) {
-    printf("DIRENT,%u,%u,%u,%u,%u,%s",
-                        parent_inode_num, //2
+void printOneEntry(struct ext2_dir_entry * one_entry, unsigned int parent_inode, unsigned int offset) {
+    printf("DIRENT,%u,%u,%u,%u,%u,%s\n",
+                        parent_inode, //2
                         offset, //3
                         one_entry->inode, //4
                         one_entry->rec_len, //5
@@ -22,35 +24,61 @@ void printOneEntry(struct ext2_dir_entry * one_entry, unsigned int offset) {
     return;
 }
 
-void printOneDirectory(struct ext2_inode * inode, int fd, unsigned int block_size) {
-    unsigned int file_size = fileSize(inode);
-    char * data_block = new char[block_size * (file_size / 512 + 1)];
-    unsigned int data_offset = inode->i_block[i];
-    pread(fd, data_block, block_size, SUPERBLOCK_OFFSET + block_size * (data_offset-1));
-    struct ext2_dir_entry * cur = data_block;
-    int block_cnt = 1;
-    unsigned int read_size = 0;
-    while (read_size < file_size) {
-        if (inode != 0) {
-            printOneEntry(cur, read_size);  
+void printDirectoryBlock(int fd, unsigned int parent_inode, unsigned int block_id, int level) {
+    unsigned int block_size = getBlockSize(fd);
+    if (level == 0) {
+        char block_content[block_size];
+        pread(fd, block_content, block_size, block_id * block_size);
+        char* byte_ptr = &block_content[0];
+        struct ext2_dir_entry* dir_entry = (struct ext2_dir_entry*) byte_ptr;
+        unsigned int offset = 0;
+        // cout << "Direct Block: " << block_id << endl;
+        while (dir_entry -> inode != 0 && dir_entry -> rec_len != 0) {
+            printOneEntry(dir_entry, parent_inode, offset);
+            offset += dir_entry -> rec_len;
+            byte_ptr += dir_entry -> rec_len;
+            dir_entry = (struct ext2_dir_entry*) byte_ptr;
         }
-        cur = (void * ) cur + cur->rec_len;
-        read_size += cur->rec_len;
-        if (read_size < )
+        return;
+    }
+
+    // indirect block
+    int block_num = getBlockSize(fd)/sizeof(unsigned int);
+    unsigned int blocks[block_num];
+    pread(fd, blocks, block_size, block_id * block_size);
+    for (int i = 0; i < block_num; i++) {
+        if (blocks[i] != 0)
+            printDirectoryBlock(fd, parent_inode, blocks[i], level - 1);
     }
 }
 
-print
+void printOneDirectory(struct ext2_inode * inode, unsigned int parent_inode, int fd) {
+    // cout << "Inode" << endl;
+    for (unsigned int i = 0; i < EXT2_IND_BLOCK; i++) 
+        printDirectoryBlock(fd, parent_inode, inode -> i_block[i], 0);
+
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_IND_BLOCK], 1);
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_DIND_BLOCK], 2);
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_TIND_BLOCK], 3);
+
+}
+
 
 void getDirectoryEntries(int fd) {
     unsigned int inode_table_id = getInodeTableID(fd);
     unsigned int inode_num = getInodeNumber(fd);
     unsigned int block_size = getBlockSize(fd);
-    unsigned int data_block_id = getInodeTableID(fd);
+    // unsigned int data_block_id = getInodeTableID(fd);
     struct ext2_inode * inodes = new struct ext2_inode[inode_num];
     pread(fd, inodes, inode_num * sizeof(struct ext2_inode), SUPERBLOCK_OFFSET + block_size * (inode_table_id - 1));
     for (unsigned int i = 0; i < inode_num; i++) {
-        if (isValidDirectNode(inodes[i])) { //valid directory node
+        if (isValidDirectNode(&inodes[i])) { //valid directory node
+            // cout << "Start: " << i + 1 << endl;
+            // cout << "Mode: " << inodes[i].i_mode << endl;
+            printOneDirectory(&inodes[i], i + 1, fd);
+            // cout << "Finished: " << i + 1 << endl;
         }
     }
+    delete inodes;
+    // printOneDirectory(&inodes[1], 2, fd);
 }

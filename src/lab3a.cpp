@@ -12,6 +12,7 @@
 #include "FreeBlockEntries.h"
 #include "FreeInodeEntries.h"
 #include "InodeSummary.h"
+#include "DirectoryEntries.h"
 #include "IndirectBlockSummary.h"
 
 using namespace std;
@@ -24,6 +25,7 @@ int main()
 	freeBlockEntries(fd);
 	freeInodeEntries(fd);
 	getInodeSummary(fd);
+	getDirectoryEntries(fd);
 	IndirectBlockSummary(fd);
 	return 0;
 }
