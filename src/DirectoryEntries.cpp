@@ -32,7 +32,7 @@ void printDirectoryBlock(int fd, unsigned int parent_inode, unsigned int block_i
         struct ext2_dir_entry* dir_entry = (struct ext2_dir_entry*) byte_ptr;
         unsigned int local_offset = 0;
         // cout << "Direct Block: " << block_id << endl;
-        while (dir_entry -> rec_len != 0) {
+        while (dir_entry -> rec_len != 0 && local_offset < block_size) {
             if (dir_entry -> inode != 0) 
                 printOneEntry(dir_entry, parent_inode, initial_offset + local_offset);
             local_offset += dir_entry -> rec_len;
