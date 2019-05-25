@@ -23,18 +23,19 @@ void printOneEntry(struct ext2_dir_entry * one_entry, unsigned int parent_inode,
     return;
 }
 
-void printDirectoryBlock(int fd, unsigned int parent_inode, unsigned int block_id, int level) {
+void printDirectoryBlock(int fd, unsigned int parent_inode, unsigned int block_id, unsigned int initial_offset, int level) {
     unsigned int block_size = getBlockSize(fd);
     if (level == 0) {
         char block_content[block_size];
         pread(fd, block_content, block_size, block_id * block_size);
         char* byte_ptr = &block_content[0];
         struct ext2_dir_entry* dir_entry = (struct ext2_dir_entry*) byte_ptr;
-        unsigned int offset = 0;
+        unsigned int local_offset = 0;
         // cout << "Direct Block: " << block_id << endl;
-        while (dir_entry -> inode != 0 && dir_entry -> rec_len != 0) {
-            printOneEntry(dir_entry, parent_inode, offset);
-            offset += dir_entry -> rec_len;
+        while (dir_entry -> rec_len != 0) {
+            if (dir_entry -> inode != 0) 
+                printOneEntry(dir_entry, parent_inode, initial_offset + local_offset);
+            local_offset += dir_entry -> rec_len;
             byte_ptr += dir_entry -> rec_len;
             dir_entry = (struct ext2_dir_entry*) byte_ptr;
         }
@@ -42,23 +43,24 @@ void printDirectoryBlock(int fd, unsigned int parent_inode, unsigned int block_i
     }
 
     // indirect block
-    int block_num = getBlockSize(fd)/sizeof(unsigned int);
+    int block_num = block_size/sizeof(unsigned int);
     unsigned int blocks[block_num];
     pread(fd, blocks, block_size, block_id * block_size);
     for (int i = 0; i < block_num; i++) {
         if (blocks[i] != 0)
-            printDirectoryBlock(fd, parent_inode, blocks[i], level - 1);
+            printDirectoryBlock(fd, parent_inode, blocks[i], initial_offset + i * pow(block_size, level - 1), level - 1);
     }
 }
 
 void printOneDirectory(struct ext2_inode * inode, unsigned int parent_inode, int fd) {
     // cout << "Inode" << endl;
+    unsigned int block_size = getBlockSize(fd);
     for (unsigned int i = 0; i < EXT2_IND_BLOCK; i++) 
-        printDirectoryBlock(fd, parent_inode, inode -> i_block[i], 0);
+        printDirectoryBlock(fd, parent_inode, inode -> i_block[i], i * block_size, 0);
 
-    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_IND_BLOCK], 1);
-    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_DIND_BLOCK], 2);
-    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_TIND_BLOCK], 3);
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_IND_BLOCK], EXT2_IND_BLOCK * block_size, 1);
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_DIND_BLOCK], EXT2_IND_BLOCK * block_size + (unsigned int) pow(block_size,2), 2);
+    printDirectoryBlock(fd, parent_inode, inode -> i_block[EXT2_TIND_BLOCK], EXT2_IND_BLOCK * block_size + (unsigned int) pow(block_size,2) + (unsigned int) pow(block_size, 3), 3);
 
 }
 
