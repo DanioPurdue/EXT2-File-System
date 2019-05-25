@@ -7,7 +7,6 @@ bool isValidDirectNode(struct ext2_inode * inode) {
     //check whether is is empty
     if (inode->i_mode == 0 || inode->i_links_count == 0) return false;
     if (inode->i_size == 0) return false;
-    // unsigned int mode_mask = 0xF000;
     //check inode type
     if ((inode->i_mode & EXT2_S_IFDIR) == EXT2_S_IFDIR) return true;
     return false;
