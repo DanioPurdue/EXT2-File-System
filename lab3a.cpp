@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <getopt.h>
 #include <iostream>
 #include "ext2_fs.h"
 #include "SuperblockSummary.h"
@@ -19,8 +20,34 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
+	int c;
+	int option_index;
+	static struct option long_options[] = {
+		{0, 0, 0, 0}
+	};
+
+	while (1){
+		c = getopt_long(argc, argv, "", long_options, &option_index);
+		if (c == -1){
+			break;
+		}
+		switch(c){
+			case 0:
+				break;
+
+			default:
+				fprintf(stderr, "<Usage> %s filename\n", argv[0]);
+				exit(1);
+				break;
+		}
+	}
+
 	if (argc < 1) exit(1);
 	int fd = open(argv[1], O_RDONLY);
+	if (fd < 0) {
+		fprintf(stderr, "Cannot open the file: %s\n", argv[1]);
+		exit(3);
+	}
 	getSuperNodeInfo(fd);
 	getGroupInfo(fd);
 	freeBlockEntries(fd);

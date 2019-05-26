@@ -13,7 +13,7 @@ bool isValidDirectNode(struct ext2_inode * inode) {
 }
 
 void printOneEntry(struct ext2_dir_entry * one_entry, unsigned int parent_inode, unsigned int offset) {
-    printf("DIRENT,%u,%u,%u,%u,%u,%s\n",
+    printf("DIRENT,%u,%u,%u,%u,%u,'%s'\n",
                         parent_inode, //2
                         offset, //3
                         one_entry->inode, //4
