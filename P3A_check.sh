@@ -83,19 +83,19 @@ dirSnap $TEMP $$
 
 echo "... checking for README file"
 checkFiles $README
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking for submitter ID in $README"
 ID=`getIDs $README $student`
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking for submitter email in $README"
 EMAIL=`getEmail $README`
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking for submitter name in $README"
 NAME=`getName $README`
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking slip-day use in $README"
 SLIPDAYS=0
@@ -123,7 +123,7 @@ fi
 
 echo "... checking for other expected files"
 checkFiles $MAKEFILE $EXPECTED
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 # make sure we find files with all the expected suffixes
 if [ -n "$SUFFIXES" ]; then
@@ -145,23 +145,23 @@ fi
 
 echo "... checking for required Make targets"
 checkTarget clean
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 checkTarget dist
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking for required compillation options"
 checkMakefile Wall
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 checkMakefile Wextra
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 # make sure we can build the expected program
 echo "... building default target(s)"
 make 2> STDERR
 testRC $? 0
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 noOutput STDERR
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... deleting programs and data to force rebuild"
 rm -f $PGMS
@@ -169,7 +169,7 @@ rm -f $PGMS
 echo "... checking make dist"
 make dist 2> STDERR
 testRC $? 0
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 checkFiles $TARBALL
 if [ $? -ne 0 ]; then
@@ -181,9 +181,9 @@ echo " ... checking make clean"
 rm -f STDERR
 make clean
 testRC $? 0
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 dirCheck $TEMP $$
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 #
 # now redo the default make and start testing functionality
@@ -191,13 +191,13 @@ let errors+=$?
 echo "... redo default make"
 make 2> STDERR
 testRC $? 0
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 noOutput STDERR
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 echo "... checking for expected products"
 checkPrograms $PGMS
-let errors+=$?
+let errors+=$?; echo "errors: $errors"
 
 # see if they detect and report invalid arguments
 for p in $PGMS
