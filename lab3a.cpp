@@ -17,9 +17,10 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char * argv[])
 {
-	int fd = open("trivial.img", O_RDONLY);
+	if (argc < 1) exit(1);
+	int fd = open(argv[1], O_RDONLY);
 	getSuperNodeInfo(fd);
 	getGroupInfo(fd);
 	freeBlockEntries(fd);
