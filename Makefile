@@ -3,6 +3,8 @@ CFLAGS = -Wall -Wextra -std=c++11 -I./include
 SOURCES = src/*.cpp
 OBJFILES = lab3a.o SuperblockSummary.o GroupSummary.o FreeBlockEntries.o FreeInodeEntries.o InodeSummary.o DirectoryEntries.o IndirectBlockSummary.o
 TARGET = lab3a
+TARFILE = lab3a-005229714.tar.gz
+SUMFILES = $(TARGET) $(SOURCES) include/*.h Makefile README
 
 all:$(TARGET)
 
@@ -34,4 +36,8 @@ IndirectBlockSummary.o: src/IndirectBlockSummary.cpp
 	$(CC) $(CFLAGS) -c src/IndirectBlockSummary.cpp
 
 clean:
-	rm -f $(OBJFILES) $(TARGET) *~
+	rm -f $(OBJFILES) $(TARGET) $(TARFILE) *~
+
+dist:
+	tar -cvzf $(TARFILE) $(SUMFILES)
+	
