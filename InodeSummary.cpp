@@ -52,7 +52,7 @@ void printFreeInode(struct ext2_inode * inode, unsigned int inode_id) {
                     f_size, // file size 11
                     inode->i_blocks); // access time 12
 
-    if (f_size < 60) {
+    if (file_type == 's' && f_size < 60) {
         cout << endl;
         return;
     }

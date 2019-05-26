@@ -256,6 +256,8 @@ do
 	grep $t $OUTPUT | sort > GOLDEN.csv
 	grep $t TEST.csv > TEST
 	cmp GOLDEN.csv TEST
+	# cat GOLDEN.csv > goldie.csv
+	# cat TEST.csv > testie.csv
 	if [ $? -ne 0 ]; then
 		echo "    $t ... OUTPUT DOES NOT MATCH"
 		let errors+=1
@@ -263,6 +265,14 @@ do
 		echo "    $t ... all" `wc -l < GOLDEN.csv` "output lines match"
 	fi
 done
+
+# echo "======Golden======="
+# 	cat Golden
+# 	echo "==================="
+
+# 	echo "======TEST======="
+# 	cat TEST.csv
+# 	echo "==================="
 
 echo
 if [ $SLIPDAYS -eq 0 ]
@@ -287,4 +297,5 @@ done
 echo
 
 # delete temp files, report errors, and exit
+# echo $errors
 cleanup $$ $errors
