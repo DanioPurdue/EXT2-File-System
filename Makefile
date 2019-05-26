@@ -4,7 +4,7 @@ SOURCES = *.cpp
 OBJFILES = lab3a.o SuperblockSummary.o GroupSummary.o FreeBlockEntries.o FreeInodeEntries.o InodeSummary.o DirectoryEntries.o IndirectBlockSummary.o
 TARGET = lab3a
 TARFILE = lab3a-005229714.tar.gz
-SUMFILES = $(TARGET) $(SOURCES) include/*.h Makefile README
+SUMFILES = $(SOURCES) include/*.h Makefile README
 
 all:$(TARGET)
 
