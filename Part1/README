@@ -1,0 +1,13 @@
+NAME: Jianxiong Wang,Yijun Wu
+EMAIL: wang1822@g.ucla.edu,yijunwu@cs.ucla.edu
+ID: 005229714,005229714
+Notes: this each part of the project has one .cpp and one .h files. All these files are included in the lab3a.cpp file.
+	DirectoryEntries.cpp
+	FreeBlockEntries.cpp
+	FreeInodeEntries.cpp
+	GroupSummary.cpp
+	IndirectBlockSummary.cpp
+	InodeSummary.cpp
+	SuperblockSummary.cpp
+	lab3a.cpp <---this is the main file that has all the cpp parts
+The "include" folder has all the .h files.
