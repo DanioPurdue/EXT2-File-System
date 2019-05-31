@@ -1,4 +1,6 @@
 import csv
+import sys
+
 def rawListParser(data_list):
     inode_list = [entry for entry in data_list if entry[0] == 'INODE']
     direc_list = [entry for entry in data_list if entry[0] == 'DIRENT']
@@ -52,31 +54,25 @@ def directoryReferenceValidation(inode_list, direc_list, total_inodes):
                 found_inode = True
                 inode_info = one_inode
                 break
-        if found_inode == False:
-            print "DIRECTORY INODE", direc_inode_num, "NAME", entry_name, "UNALLOCATED INODE", entry_inode_num
         if entry_inode_num < 1 or entry_inode_num > total_inodes:
             print "DIRECTORY INODE", direc_inode_num, "NAME", entry_name, "INVALID INODE", entry_inode_num
+        elif found_inode == False:
+            print "DIRECTORY INODE", direc_inode_num, "NAME", entry_name, "UNALLOCATED INODE", entry_inode_num
         
-        if entry_name == "'.'" and entry_inode_num == direc_inode_num:
+        if entry_name == "'.'" and entry_inode_num != direc_inode_num:
             print "DIRECTORY INODE", direc_inode_num, "NAME", entry_name, "LINK TO INODE", inode_num, "SHOULD BE", direc_inode_num
-        # print entry_name
-        # print len(entry_name), len("'..'")
-        # for char_i in entry_name:
-        #     print char_i, "\n"
-        # print "____"
-        # # print entry_name == ".."
         if entry_name == "'..'":
-            print "entyr2"
             parent_direc_inode_num = foundParentInodeNum(direc_inode_num, direc_list)
             if parent_direc_inode_num != entry_inode_num:
                 print "DIRECTORY INODE", direc_inode_num, "NAME", entry_name, "LINK TO INODE", inode_num, "SHOULD BE", direc_inode_num
     return
 #linke count: 7
-data_list = returnDataList('trivial.csv')
+if len(sys.argv) < 2:
+    print "Usage: ./DCP.py filename"
+    exit(1)
+filename = sys.argv[1]
+data_list = returnDataList(filename)
 inode_list, direc_list, group_summary = rawListParser(data_list)
 total_inodes = int(group_summary[3])
-print "total_inodes", total_inodes
-print(len(inode_list))
-print(len(direc_list))
 linkCountValidation(inode_list, direc_list)
 directoryReferenceValidation(inode_list, direc_list, total_inodes)
