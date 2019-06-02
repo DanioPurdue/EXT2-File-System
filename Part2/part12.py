@@ -35,9 +35,11 @@ for row in csv_list:
         
 block_size = int(supernode[3])
 block_num = int(block_size / 4)
-# TODO: calculate min_block (the first data block)
-# min_block = int(group_info[-1]) + 1
-min_block = 8
+# calculate min_block (the first data block)
+number_of_inodes = int(supernode[2])
+min_block = int(group_info[-1]) + int(number_of_inodes*128 / block_size)
+if (number_of_inodes * 128) % block_size != 0:
+    min_block += 1
 max_block = int(supernode[1]) - 1
 offset_mapping = [i for i in range(13)] + [12 + block_num] + [12 + block_num + block_num ** 2]
 level_mapping = {0: "", 1: "INDIRECT", 2: "DOUBLE INDIRECT", 3: "TRIPLE INDIRECT"}
