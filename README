@@ -1,5 +1,2 @@
-NAME: Jianxiong Wang
-EMAIL: wang1822@g.ucla.edu
-ID: 005229714
-NOTES: this project has two parts, one is the server program and the other one is the client program. Both client and the server need to specify the same port at the begining in order to establish the connection.
+This project has two parts, one is the server program and the other one is the client program. Both client and the server need to specify the same port at the begining in order to establish the connection.
 Lab3A File System CS111
